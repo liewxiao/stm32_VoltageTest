@@ -6,7 +6,6 @@
 // ADC 编号选择
 // 可以是 ADC1/2，如果使用ADC3，中断相关的要改成ADC3的
 #define    ADC_APBxClock_FUN             RCC_APB2PeriphClockCmd
-#define    ADC2_CLK                      RCC_APB2Periph_ADC2
 #define	   ADC1_CLK						 RCC_APB2Periph_ADC1
 
 #define    DMA_APBxClock_FUN             RCC_AHBPeriphClockCmd
@@ -19,15 +18,20 @@
 #define    ADC_GPIO_CLK                  RCC_APB2Periph_GPIOC  
 #define    ADC_PORT                      GPIOC
 #define    ADC_PIN                       GPIO_Pin_1
+
+#define	   ADC_DR_Address				 ((uint32_t)0x40012400+0x4C)
+#define	   ADC_BUF_SIZE					 2
+#define    TOTAL_CONVERT_CH				 2
 // ADC 通道宏定义
-#define    ADC1_CHANNEL					  ADC_Channel_16
-#define    ADC2_CHANNEL                   ADC_Channel_11
+#define    ADC1_VCHANNEL				   ADC_Channel_16
+#define    ADC1_TCHANNEL                   ADC_Channel_11
 
 // ADC 中断相关宏定义
 #define    ADC_IRQ                       ADC1_2_IRQn
 #define    ADC_IRQHandler                ADC1_2_IRQHandler
 
-void ADC_Iint(void);
-uint32_t ADC_Scan( void );
+void adc_Init( void );
+float Get_Voltage( void );
+float Get_Chip_Temperature( void );
 
 #endif

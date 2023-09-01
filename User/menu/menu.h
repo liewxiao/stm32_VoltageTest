@@ -2,51 +2,58 @@
 #define	     __MENU_H
 
 #include "bsp_ili9341_lcd.h"
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+#include "module_key.h"
+#include "module_adc.h"
+#include "bsp_rtc.h"
+#include <stdio.h>
+#include "global.h"
+
+#define GET_KEY		1
+#define GET_DEFAULT -1
 
 typedef struct{
-	uint8_t menu_id;//menu id
-	void (*current_operation)();
+	uint8_t menu_id;				//menu id
+	uint8_t (*current_operation)(); //menu implement function
 }key_table;
 
 extern key_table menu_table[35];
 
-void main_menu( void );
-void password_menu( void );
-void second_menu1( void );
-void second_menu2( void );
-void second_menu3( void );
-void second_menu4( void );
-void second_menu5( void );
-void second_submenu1_1( void );
-void second_submenu1_2( void );
-void second_submenu1_3( void );
-void second_submenu1_4( void );
-void second_submenu2_1( void );
-void second_submenu2_2( void );
-void second_submenu3_1( void );
-void second_submenu3_2( void );
-void second_submenu3_3( void );
-void second_submenu3_4( void );
-void second_submenu4_1( void );
-void second_submenu4_2( void );
-void second_submenu5_1( void );
-void second_submenu5_2( void );
-void lg_set( void );
-void btn_set( void );
-void pas_set( void );
-void time_set( void );
-void alram_up( void );
-void alram_low( void );
-void dev_adress( void );
-void batu_set( void );
-void parity_set( void );
-void stopbit_set( void );
-void ip_set( void );
-void devport_set( void );
-void data( void );
-void history_data( void );
+void lcd_Strinit( void );
+
+uint8_t main_menu( void );
+uint8_t password_menu( void );
+uint8_t second_menu1( void );
+uint8_t second_menu2( void );
+uint8_t second_menu3( void );
+uint8_t second_menu4( void );
+uint8_t second_menu5( void );
+uint8_t second_submenu1_1( void );
+uint8_t second_submenu1_2( void );
+uint8_t second_submenu1_3( void );
+uint8_t second_submenu1_4( void );
+uint8_t second_submenu2_1( void );
+uint8_t second_submenu2_2( void );
+uint8_t second_submenu3_1( void );
+uint8_t second_submenu3_2( void );
+uint8_t second_submenu3_3( void );
+uint8_t second_submenu3_4( void );
+uint8_t second_submenu4_1( void );
+uint8_t second_submenu4_2( void );
+uint8_t second_submenu5_1( void );
+uint8_t second_submenu5_2( void );
+uint8_t lg_set( void );
+uint8_t btn_set( void );
+uint8_t pas_set( void );
+uint8_t time_set( void );
+uint8_t alram_up( void );
+uint8_t alram_low( void );
+uint8_t dev_adress( void );
+uint8_t batu_set( void );
+uint8_t parity_set( void );
+uint8_t stopbit_set( void );
+uint8_t ip_set( void );
+uint8_t devport_set( void );
+uint8_t data( void );
+uint8_t history_data( void );
 
 #endif

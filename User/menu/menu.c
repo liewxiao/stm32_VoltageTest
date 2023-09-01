@@ -1,5 +1,14 @@
 #include "menu.h"
 
+void lcd_Strinit( void )
+{
+	ILI9341_Init();
+	ILI9341_GramScan ( 6 );
+	LCD_SetFont(&Font8x16);
+	LCD_SetColors(RED,BLACK);
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+}
+
 key_table menu_table[35] = {
 	//zero menu level
 	{ 0, main_menu },
@@ -47,241 +56,367 @@ key_table menu_table[35] = {
 	{ 34, history_data }
 };
 
-void menu_scan( uint8_t key )
-{
-	
-}
+static char scan_status = GET_DEFAULT;
+static uint8_t menu_key = 0;
 
-void main_menu( void )
+static uint8_t wait_key_box( char *key_status )
 {
 	uint8_t key_value = 0;
+	BaseType_t queuestatus;
+	BaseType_t keyseam_status;
+	
+	queuestatus = xQueueReceive( key_queuehandle,(uint8_t*)&key_value,0 );
+	
+	if( (queuestatus == pdPASS) && (key_value != N_KEY) ) {
+		*key_status = GET_KEY;
+		return key_value;
+	}
+}
+
+uint8_t main_menu( void )
+{
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	
+	menu_key = 0;
+	uint32_t rtc_value = 0;
+	
+	float voltage = 0;
+	float temperature = 0;
+	char Vbuf[50] = {0};
+	char Tbuf[50] = {0};
+	char buf[50] = {0};
 	
 	while(1){
+		menu_key = wait_key_box( &scan_status );
 		
-		ILI9341_DispStringLine_EN_CH( LINE(0),"北京时间：" );
-		ILI9341_DispStringLine_EN_CH( LINE(5),"电压值：" );
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			
+			switch( menu_key )
+			{
+				case KEY_ENTER:
+					return 1;
+			}
+		}
+		
+		//xQueueReceive( rtc_queuehandle, &rtc_value, 0 );
+		xQueueReceive( adc_queuehandle, &temperature, 0 );
+		xQueueReceive( adc_queuehandle, &voltage, 0 );
+		
+		//Time_Display( rtc_value, &systime );
+		//sprintf( buf,"%d",rtc_value);
+		sprintf( Vbuf,"电压值：%.1f",voltage);
+		sprintf( Tbuf,"环境温度：%.1f",temperature);
+		
+		//ILI9341_DispStringLine_EN_CH( LINE(0),Vbuf );
+		ILI9341_DispStringLine_EN_CH( LINE(4),Vbuf );
+		ILI9341_DispStringLine_EN_CH( LINE(5),Tbuf );
 		ILI9341_DispStringLine_EN_CH( LINE(7),"KEY1单击上翻菜单" );
-		ILI9341_DispStringLine_EN_CH( LINE(8),"KEY2单击下翻菜单" );
-		ILI9341_DispStringLine_EN_CH( LINE(9),"KEY1双击向左" );
-		ILI9341_DispStringLine_EN_CH( LINE(10),"KEY2单击向右" );
-		ILI9341_DispStringLine_EN_CH( LINE(11),"KEY1长按确定" );
-		ILI9341_DispStringLine_EN_CH( LINE(12),"KEY2长按退出" );
+		ILI9341_DispStringLine_EN_CH( LINE(9),"KEY2单击下翻菜单" );
+		ILI9341_DispStringLine_EN_CH( LINE(11),"KEY1双击向左" );
+		ILI9341_DispStringLine_EN_CH( LINE(13),"KEY2单击向右" );
+		ILI9341_DispStringLine_EN_CH( LINE(15),"KEY1长按确定" );
+		ILI9341_DispStringLine_EN_CH( LINE(17),"KEY2长按退出" );
 	}
 }
 
-void password_menu( void )
+uint8_t password_menu( void )
 {
 	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
-	ILI9341_DispStringLine_EN_CH( LINE(0),"请输入设置密码：" );
-}
-
-void second_menu1( void )
-{
-	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	menu_key = 0;
+	
 	while(1){
-	ILI9341_DispString_EN_CH( 0, 0, "->" );
-	ILI9341_DispString_EN_CH( 16, 0, "系统设置" );
-	ILI9341_DispStringLine_EN_CH( LINE(1),"报警设置" );
-	ILI9341_DispStringLine_EN_CH( LINE(2),"通讯设置" );
-	ILI9341_DispStringLine_EN_CH( LINE(3),"网络设置" );
-	ILI9341_DispStringLine_EN_CH( LINE(4),"历史查询" );
+		menu_key = wait_key_box( &scan_status );
+		
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			switch( menu_key )
+			{
+				case KEY_ENTER:
+					return 2;
+			}
+		}
+		
+		ILI9341_DispStringLine_EN_CH( LINE(0),"请输入四位数字密码：" );
 	}
 }
 
-void second_menu2( void )
+uint8_t second_menu1( void )
 {
-//	ILI9341_Clear(0,0,16,16);
-//	
-//	ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
-//	ILI9341_DispString_EN_CH( 0, 16, "->" );
-//	ILI9341_DispString_EN_CH( 16,16,"报警设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(2),"通讯设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"网络设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"历史查询" );
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	menu_key = 0;
+	
+	while(1){
+		menu_key = wait_key_box( &scan_status );
+		
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			switch( menu_key )
+			{
+				case KEY_UP:
+					return 6;
+				case KEY_DOWN:
+					return 3;
+			}
+		}
+
+		ILI9341_DispString_EN_CH( 0, 0, "-->" );
+		ILI9341_DispString_EN_CH( 24, 0, "系统设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(3),"报警设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(6),"通讯设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(9),"网络设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(12),"历史查询" );
+	}
 }
 
-void second_menu3( void )
+uint8_t second_menu2( void )
 {
-//	ILI9341_Clear(0,16,16,16);
-//	
-//	ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"报警设置" );
-//	ILI9341_DispString_EN_CH( 0, 32, "->" );
-//	ILI9341_DispString_EN_CH( 16,32,"通讯设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"网络设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"历史查询" );
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	menu_key = 0;
+	
+	while(1){
+		menu_key = wait_key_box( &scan_status );
+		
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			switch( menu_key )
+			{
+				case KEY_UP:
+					return 2;
+				case KEY_DOWN:
+					return 4;
+			}
+		}
+		
+		ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
+		ILI9341_DispString_EN_CH( 0, 48, "-->" );
+		ILI9341_DispString_EN_CH( 24,48,"报警设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(6),"通讯设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(9),"网络设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(12),"历史查询" );
+	}
 }
 
-void second_menu4( void )
+uint8_t second_menu3( void )
 {
-//	ILI9341_Clear(0,32,16,16);
-//	
-//	ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"报警设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(2),"通讯设置" );
-//	ILI9341_DispString_EN_CH( 0, 48, "->" );
-//	ILI9341_DispString_EN_CH( 16,48,"网络设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"历史查询" );
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	menu_key = 0;
+	
+	while(1){
+		menu_key = wait_key_box( &scan_status );
+		
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			switch( menu_key )
+			{
+				case KEY_UP:
+					return 3;
+				case KEY_DOWN:
+					return 5;
+			}
+		}
+		
+		ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(3),"报警设置" );
+		ILI9341_DispString_EN_CH( 0, 96, "-->" );
+		ILI9341_DispString_EN_CH( 24,96,"通讯设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(9),"网络设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(12),"历史查询" );
+	}
 }
 
-void second_menu5( void )
+uint8_t second_menu4( void )
 {
-//	ILI9341_Clear(0,48,16,16);
-//	
-//	ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"报警设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(2),"通讯设置" );
-//	ILI9341_DispStringLine_EN_CH( LINE(1),"网络设置" );
-//	ILI9341_DispString_EN_CH( 0, 64, "->" );
-//	ILI9341_DispString_EN_CH( 16,64,"历史查询" );
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	menu_key = 0;
+	
+	while(1){
+		menu_key = wait_key_box( &scan_status );
+		
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			switch( menu_key )
+			{
+				case KEY_UP:
+					return 4;
+				case KEY_DOWN:
+					return 6;
+			}
+		}
+		
+		ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(3),"报警设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(6),"通讯设置" );
+		ILI9341_DispString_EN_CH( 0, 144, "-->" );
+		ILI9341_DispString_EN_CH( 24,144,"网络设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(12),"历史查询" );
+	}
 }
 
-void second_submenu1_1( void )
+uint8_t second_menu5( void )
+{
+	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	menu_key = 0;
+
+	while(1){
+		menu_key = wait_key_box( &scan_status );
+		
+		if( scan_status == GET_KEY ) {
+			scan_status = GET_DEFAULT;
+			switch( menu_key )
+			{
+				case KEY_UP:
+					return 5;
+				case KEY_DOWN:
+					return 2;
+			}
+		}
+		
+		ILI9341_DispStringLine_EN_CH( LINE(0), "系统设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(3),"报警设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(6),"通讯设置" );
+		ILI9341_DispStringLine_EN_CH( LINE(9),"网络设置" );
+		ILI9341_DispString_EN_CH( 0, 192, "-->" );
+		ILI9341_DispString_EN_CH( 24,192,"历史查询" );
+	}
+}
+
+uint8_t second_submenu1_1( void )
 {
 	
 }
 
-void second_submenu1_2( void )
+uint8_t second_submenu1_2( void )
 {
 	
 }
 
-void second_submenu1_3( void )
+uint8_t second_submenu1_3( void )
 {
 	
 }
 
-void second_submenu1_4( void )
+uint8_t second_submenu1_4( void )
 {
 	
 }
 
-void second_submenu2_1( void )
+uint8_t second_submenu2_1( void )
 {
 	
 }
 
-void second_submenu2_2( void )
+uint8_t second_submenu2_2( void )
 {
 	
 }
 
-void second_submenu3_1( void )
+uint8_t second_submenu3_1( void )
 {
 	
 }
 
-void second_submenu3_2( void )
+uint8_t second_submenu3_2( void )
 {
 	
 }
 
-void second_submenu3_3( void )
+uint8_t second_submenu3_3( void )
 {
 	
 }
 
-void second_submenu3_4( void )
+uint8_t second_submenu3_4( void )
 {
 	
 }
 
-void second_submenu4_1( void )
+uint8_t second_submenu4_1( void )
 {
 	
 }
 
-void second_submenu4_2( void )
+uint8_t second_submenu4_2( void )
 {
 	
 }
 
-void second_submenu5_1( void )
+uint8_t second_submenu5_1( void )
 {
 	
 }
 
-void second_submenu5_2( void )
+uint8_t second_submenu5_2( void )
 {
 	
 }
 
-void lg_set( void )
+uint8_t lg_set( void )
 {
 	
 }
 
-void btn_set( void )
+uint8_t btn_set( void )
 {
 	
 }
 
-void pas_set( void )
+uint8_t pas_set( void )
 {
 	
 }
 
-void time_set( void )
+uint8_t time_set( void )
 {
 	
 }
 
-void alram_up( void )
+uint8_t alram_up( void )
 {
 	
 }
 
-void alram_low( void )
+uint8_t alram_low( void )
 {
 	
 }
 
-void dev_adress( void )
+uint8_t dev_adress( void )
 {
 	
 }
 
-void batu_set( void )
+uint8_t batu_set( void )
 {
 	
 }
 
-void parity_set( void )
+uint8_t parity_set( void )
 {
 	
 }
 
-void stopbit_set( void )
+uint8_t stopbit_set( void )
 {
 	
 }
 
-void ip_set( void )
+uint8_t ip_set( void )
 {
 	
 }
 
-void devport_set( void )
+uint8_t devport_set( void )
 {
 	
 }
 
-void data( void )
+uint8_t data( void )
 {
 	
 }
 
-void history_data( void )
+uint8_t history_data( void )
 {
 	
 }
-
-
-/*typedef struct{
-	uint8_t current_id;//current menu id
-	uint8_t up;//turn up id
-	uint8_t down;//turn down id
-	uint8_t enter;//enter id
-	uint8_t exit;//exit id
-	void (*current_operation)();
-}key_table;*/

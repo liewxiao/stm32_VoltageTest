@@ -23,7 +23,8 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f10x_it.h"
-#include "module_usart.h"
+#include "bsp_rtc.h"
+#include "global.h"
 /** @addtogroup STM32F10x_StdPeriph_Template
   * @{
   */
@@ -148,9 +149,21 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-/*void PPP_IRQHandler(void)
+void RTC_IRQHandler(void)
 {
-}*/
+	BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
+	
+	if (RTC_GetITStatus(RTC_IT_SEC) != RESET)
+	{
+		/* Clear the RTC Second interrupt */
+	    RTC_ClearITPendingBit(RTC_IT_SEC);
+		
+		RTC_WaitForLastTask();
+		xSemaphoreGiveFromISR( rtc_semaphorehandle,&pxHigherPriorityTaskWoken );
+		
+		portYIELD_FROM_ISR( pxHigherPriorityTaskWoken );
+	}
+}
 
 /**
   * @}

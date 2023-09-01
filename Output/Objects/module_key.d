@@ -32,13 +32,3 @@
 .\objects\module_key.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_usart.h
 .\objects\module_key.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\stm32f10x_wwdg.h
 .\objects\module_key.o: ..\Libraries\STM32F10x_StdPeriph_Driver\inc\misc.h
-.\objects\module_key.o: ..\User\freertos\include\FreeRTOS.h
-.\objects\module_key.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
-.\objects\module_key.o: ..\User\freertos\FreeRTOSConfig.h
-.\objects\module_key.o: ..\User\freertos\include\projdefs.h
-.\objects\module_key.o: ..\User\freertos\include\portable.h
-.\objects\module_key.o: ..\User\freertos\include\deprecated_definitions.h
-.\objects\module_key.o: ..\User\freertos\portable\portmacro.h
-.\objects\module_key.o: ..\User\freertos\include\mpu_wrappers.h
-.\objects\module_key.o: ..\User\freertos\include\task.h
-.\objects\module_key.o: ..\User\freertos\include\list.h

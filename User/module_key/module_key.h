@@ -2,8 +2,6 @@
 #define __MODULE_KEY_H
 
 #include "stm32f10x.h"
-#include "FreeRTOS.h"
-#include "task.h"
 
 #define KEY_STATE_NOPRESS       0xA0
 #define KEY_STATE_DEBOUNCE      0xB0
@@ -20,14 +18,13 @@
 #define KEY_K2         0x02
 
 #define N_KEY     0                       // no click
-#define Key1_S    (KEY_STATE_CLILK | KEY_K1 ) // single click
-#define Key1_D    (KEY_STATE_DOUBLE | KEY_K1 ) // double press
-#define Key1_L    (KEY_STATE_LONGPRESS | KEY_K1 ) // long press
+#define KEY_UP    (KEY_STATE_CLILK | KEY_K1 ) // single click
+#define KEY_LEFT    (KEY_STATE_DOUBLE | KEY_K1 ) // double press
+#define KEY_ENTER    (KEY_STATE_LONGPRESS | KEY_K1 ) // long press
  
-#define Key2_S    (KEY_STATE_CLILK | KEY_K2 ) // single click
-#define Key2_D    (KEY_STATE_DOUBLE | KEY_K2 ) // double press
-#define Key2_L    (KEY_STATE_LONGPRESS | KEY_K2 ) // long press
-
+#define KEY_DOWN    (KEY_STATE_CLILK | KEY_K2 ) // single click
+#define KEY_RIGHT    (KEY_STATE_DOUBLE | KEY_K2 ) // double press
+#define KEY_EXIT    (KEY_STATE_LONGPRESS | KEY_K2 ) // long press
 
 
 #define		DEBOUNCE_TIME		2

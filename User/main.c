@@ -5,6 +5,7 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
+#include "semphr.h"
 
 //peripherals handle
 #include "module_led.h"
@@ -13,15 +14,10 @@
 #include "module_adc.h"
 #include "bsp_ili9341_lcd.h"
 #include "menu.h"
+#include "global.h"
 
 static void prvSetupHardware( void );
-
-//create LED and KEY taskhandle
-TaskHandle_t led_taskhandle;
-TaskHandle_t key_taskhandle;
-TaskHandle_t environmental_taskhandle;
-TaskHandle_t display_taskhandle;
-
+void menu_task( void *para );
 
 void led_task( void *para )
 {
@@ -34,22 +30,22 @@ void led_task( void *para )
 		if( task_status==pdPASS ) {
 			switch(button_vaule)
 			{
-				case Key1_S:
+				case KEY_UP:
 					LED_RED;
 					break;
-				case Key1_D:
+				case KEY_DOWN:
 					LED_GREEN;
 					break;
-				case Key1_L:
+				case KEY_LEFT:
 					LED_BLUE;
 					break;
-				case Key2_S:
+				case KEY_RIGHT:
 					LED_YELLOW;
 					break;
-				case Key2_D:
+				case KEY_ENTER:
 					LED_PURPLE;
 					break;
-				case Key2_L:
+				case KEY_EXIT:
 					LED_CYAN;
 					break;
 				default:
@@ -64,67 +60,95 @@ void key_task( void *para )
 	TickType_t lastwake_time;
 	const TickType_t scan_period = pdMS_TO_TICKS( 20 );
 	lastwake_time = xTaskGetTickCount();
+	
 	uint8_t key_value = N_KEY;
+	static uint16_t scan_cnt = 0;
+	key_queuehandle = xQueueCreate( 1,sizeof(uint8_t) );
 	
 	for( ; ; ) {
 		key_value = Key_Read();
+		
 		xTaskNotify(led_taskhandle,(uint32_t)(key_value),eSetValueWithoutOverwrite);
+		xQueueSend( key_queuehandle,&key_value,NULL );
+		
+		if( key_value == N_KEY ) {
+			scan_cnt++;
+			if( scan_cnt == 3000 ) {
+				vTaskDelete( menu_taskhandle );
+				xTaskCreate( menu_task, "MENU_Task", 200, NULL, 1, &menu_taskhandle );
+				scan_cnt = 0;
+		}
+	}
 		
 		xTaskDelayUntil( &lastwake_time, scan_period );
 	}
 }
 
-void environmental_task( void *para )
+void adc_task( void *para )
 {
-	ADC_Iint();
+	float voltage = 0;
+	float temperature = 0;
+	TickType_t lastwake_time;
+	const TickType_t scan_period = pdMS_TO_TICKS( 1000 );
+	lastwake_time = xTaskGetTickCount();
 	
-	volatile uint32_t ADC_value = 0;
+	adc_queuehandle = xQueueCreate( 2, sizeof(float) );
 	
+	adc_Init();
 	
 	for( ; ; ) {
-		ADC_value = ADC_Scan();
-		xTaskNotify(display_taskhandle,ADC_value,eSetValueWithoutOverwrite);
+		voltage = Get_Voltage();
+		temperature = Get_Chip_Temperature();
+		if( adc_queuehandle != NULL ) {
+			xQueueSend( adc_queuehandle, &temperature, 0 );
+			xQueueSend( adc_queuehandle, &voltage, 0);
+		}
 		
+		xTaskDelayUntil( &lastwake_time, scan_period );
 	}
 }
 
-void (*current_operation_index)();
-static uint8_t last_index = 35;
-static uint8_t fun_index = 0;
+uint8_t current_menu_index = 0;
 
-void display_task( void *para )
+void menu_task( void *para )
 {
-	ILI9341_Init();
-	ILI9341_GramScan ( 6 );
-	LCD_SetFont(&Font8x16);
-	LCD_SetColors(RED,BLACK);
-	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
-	
-
-	BaseType_t task_status;
-	uint16_t temperature_value = 0;
-	uint16_t voltage_value = 0;
+	current_menu_index = 0;
 	
 	for( ; ; ) {
-		second_menu1();		
-		main_menu();
-		password_menu();
+		current_menu_index = menu_table[current_menu_index].current_operation();
+	}
+}
+
+void rtc_task( void *para )
+{
+	//RTC_init( &systime );
+	rtc_semaphorehandle = xSemaphoreCreateBinary();
+	rtc_queuehandle = xQueueCreate( 1, sizeof(uint32_t) );
+	BaseType_t rtc_semaphorestatus;
+	uint32_t rtc_value = 0;
+	
+	while(1)
+	{
+		rtc_semaphorestatus = xSemaphoreTake( rtc_semaphorehandle, portMAX_DELAY );
+		if( rtc_semaphorestatus == pdPASS )
+		{
+			rtc_value = RTC_GetCounter();
+			xQueueSend( rtc_queuehandle, &rtc_value, portMAX_DELAY );
+		}
 	}
 }
 
 int main(void)
 {
-	BaseType_t led_taskstaus, key_taskstaus, environmental_taskstaus;
-	//init peripheral
-	GPIO_LED_Config();
-	GPIO_Key_Iint();
+	BaseType_t led_taskstaus, key_taskstaus, adc_taskstaus;
 	
 	prvSetupHardware();
 	
-	led_taskstaus = xTaskCreate( led_task, "LED_Task", 100, NULL, 0, &led_taskhandle );
-	key_taskstaus = xTaskCreate( key_task, "KEY_Task", 100, NULL, 1, &key_taskhandle );
-	environmental_taskstaus = xTaskCreate( environmental_task, "environmental_Task", 100, NULL, 0, &environmental_taskhandle );
-	xTaskCreate( display_task, "display_Task", 100, NULL, 0, &display_taskhandle );
+	led_taskstaus = xTaskCreate( led_task, "LED_Task", 50, NULL, 1, &led_taskhandle );
+	key_taskstaus = xTaskCreate( key_task, "KEY_Task", 50, NULL, 2, &key_taskhandle );
+	adc_taskstaus = xTaskCreate( adc_task, "ADC_Task", 100, NULL, 1, &adc_taskhandle );
+	xTaskCreate( menu_task, "MENU_Task", 200, NULL, 1, &menu_taskhandle );
+	xTaskCreate( rtc_task, "RTC_Task", 100, NULL, 3, &rtc_taskhandle );
 	
 	/* Start the scheduler. */
 	vTaskStartScheduler();
@@ -190,6 +214,10 @@ static void prvSetupHardware( void )
 
 	/* Configure HCLK clock as SysTick clock source. */
 	SysTick_CLKSourceConfig( SysTick_CLKSource_HCLK );
-
+	
+	//init peripheral
+	lcd_Strinit();
 	USART_Config();
+	GPIO_LED_Config();
+	GPIO_Key_Iint();
 }

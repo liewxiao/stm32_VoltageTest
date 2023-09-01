@@ -113,11 +113,11 @@
           <SimDllName>SARMCM3.DLL</SimDllName>
           <SimDllArguments></SimDllArguments>
           <SimDlgDll>DARMSTM.DLL</SimDlgDll>
-          <SimDlgDllArguments>-pSTM32F103VB</SimDlgDllArguments>
+          <SimDlgDllArguments>-pSTM32F103ZE</SimDlgDllArguments>
           <TargetDllName>SARMCM3.DLL</TargetDllName>
           <TargetDllArguments></TargetDllArguments>
           <TargetDlgDll>TARMSTM.DLL</TargetDlgDll>
-          <TargetDlgDllArguments>-pSTM32F103VB</TargetDlgDllArguments>
+          <TargetDlgDllArguments>-pSTM32F103ZE</TargetDlgDllArguments>
         </DllOption>
         <DebugOption>
           <OPTHX>
@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\module_led;..\User\module_usart;..\User\freertos\include;..\User\freertos\portable;..\User\freertos;..\User\module_key;..\User\flexible_button;..\User\module_adc;..\User\lcd;..\User\menu</IncludePath>
+              <IncludePath>..\Libraries\STM32F10x_StdPeriph_Driver\inc;..\User;..\User\module_led;..\User\module_usart;..\User\freertos\include;..\User\freertos\portable;..\User\freertos;..\User\module_key;..\User\flexible_button;..\User\module_adc;..\User\lcd;..\User\menu;..\User\rtc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -449,6 +449,21 @@
               <FileName>menu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\User\menu\menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>global.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\global.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\rtc\bsp_rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_date.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\rtc\bsp_date.c</FilePath>
             </File>
           </Files>
         </Group>

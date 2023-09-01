@@ -43,6 +43,7 @@
 .\objects\main.o: ..\User\freertos\include\task.h
 .\objects\main.o: ..\User\freertos\include\list.h
 .\objects\main.o: ..\User\freertos\include\queue.h
+.\objects\main.o: ..\User\freertos\include\semphr.h
 .\objects\main.o: ..\User\module_led\module_led.h
 .\objects\main.o: ..\User\module_usart\module_usart.h
 .\objects\main.o: ..\User\module_key\module_key.h
@@ -51,3 +52,8 @@
 .\objects\main.o: ..\User\lcd\fonts.h
 .\objects\main.o: ..\User\lcd\fonts.h
 .\objects\main.o: ..\User\menu\menu.h
+.\objects\main.o: ..\User\rtc\bsp_rtc.h
+.\objects\main.o: ..\User\./rtc/bsp_calendar.h
+.\objects\main.o: ..\User\./rtc/bsp_date.h
+.\objects\main.o: ..\User\global.h
+.\objects\main.o: ..\User\rtc\bsp_rtc.h

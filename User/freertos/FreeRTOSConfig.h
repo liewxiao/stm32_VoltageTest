@@ -41,6 +41,7 @@
 #define vPortSVCHandler SVC_Handler
 #define xPortPendSVHandler PendSV_Handler
 #define xPortSysTickHandler SysTick_Handler
+#define configUSE_COUNTING_SEMAPHORES 1
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			0
@@ -53,6 +54,7 @@
 #define configUSE_TRACE_FACILITY	0
 #define configUSE_16_BIT_TICKS		0
 #define configIDLE_SHOULD_YIELD		1
+#define configSUPPORT_DYNAMIC_ALLOCATION 1
 
 
 /* Set the following definitions to 1 to include the API function, or zero
