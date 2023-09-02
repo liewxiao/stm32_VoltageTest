@@ -25,6 +25,7 @@ char const *en_WEEK_STR[] = { "Sunday","Monday", "Tuesday", "Wednesday", "Thursd
 char const *en_zodiac_sign[] = {"Pig", "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog"};
 
 
+
 /*
  * 函数名：NVIC_Configuration
  * 描述  ：配置RTC秒中断的主中断优先级为1，次优先级为0

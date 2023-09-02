@@ -1,5 +1,3 @@
-
-
 #ifndef __RTC_H
 #define	__RTC_H
 
@@ -14,14 +12,13 @@
 
 #define RTC_BKP_DRX          BKP_DR1
 // 写入到备份寄存器的数据宏定义
-#define RTC_BKP_DATA         0xAAAA
+#define RTC_BKP_DATA         0xA5A5
 
 //北京时间的时区秒数差
 #define TIME_ZOOM						(8*60*60)
 
 void RTC_init( rtc_time *tm );
-void Time_Adjust(rtc_time *tm);
 void Time_Show(rtc_time *tm);
 void Time_Display( uint32_t rtc_value, rtc_time *tm );
 
-#endif /* __XXX_H */
+#endif

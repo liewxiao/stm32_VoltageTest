@@ -121,7 +121,7 @@ void menu_task( void *para )
 
 void rtc_task( void *para )
 {
-	//RTC_init( &systime );
+	RTC_init( &systime );
 	rtc_semaphorehandle = xSemaphoreCreateBinary();
 	rtc_queuehandle = xQueueCreate( 1, sizeof(uint32_t) );
 	BaseType_t rtc_semaphorestatus;
@@ -146,9 +146,9 @@ int main(void)
 	
 	led_taskstaus = xTaskCreate( led_task, "LED_Task", 50, NULL, 1, &led_taskhandle );
 	key_taskstaus = xTaskCreate( key_task, "KEY_Task", 50, NULL, 2, &key_taskhandle );
-	adc_taskstaus = xTaskCreate( adc_task, "ADC_Task", 100, NULL, 1, &adc_taskhandle );
+	adc_taskstaus = xTaskCreate( adc_task, "ADC_Task", 50, NULL, 1, &adc_taskhandle );
 	xTaskCreate( menu_task, "MENU_Task", 200, NULL, 1, &menu_taskhandle );
-	xTaskCreate( rtc_task, "RTC_Task", 100, NULL, 3, &rtc_taskhandle );
+	xTaskCreate( rtc_task, "RTC_Task", 50, NULL, 3, &rtc_taskhandle );
 	
 	/* Start the scheduler. */
 	vTaskStartScheduler();

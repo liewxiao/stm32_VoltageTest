@@ -84,7 +84,6 @@ uint8_t main_menu( void )
 	float temperature = 0;
 	char Vbuf[50] = {0};
 	char Tbuf[50] = {0};
-	char buf[50] = {0};
 	
 	while(1){
 		menu_key = wait_key_box( &scan_status );
@@ -99,16 +98,15 @@ uint8_t main_menu( void )
 			}
 		}
 		
-		//xQueueReceive( rtc_queuehandle, &rtc_value, 0 );
+		xQueueReceive( rtc_queuehandle, &rtc_value, 0 );
 		xQueueReceive( adc_queuehandle, &temperature, 0 );
 		xQueueReceive( adc_queuehandle, &voltage, 0 );
 		
-		//Time_Display( rtc_value, &systime );
-		//sprintf( buf,"%d",rtc_value);
+		Time_Display( rtc_value, &systime );
+
 		sprintf( Vbuf,"电压值：%.1f",voltage);
 		sprintf( Tbuf,"环境温度：%.1f",temperature);
-		
-		//ILI9341_DispStringLine_EN_CH( LINE(0),Vbuf );
+
 		ILI9341_DispStringLine_EN_CH( LINE(4),Vbuf );
 		ILI9341_DispStringLine_EN_CH( LINE(5),Tbuf );
 		ILI9341_DispStringLine_EN_CH( LINE(7),"KEY1单击上翻菜单" );
