@@ -19,12 +19,16 @@
 static void prvSetupHardware( void );
 void menu_task( void *para );
 
+//LED flash task
 void led_task( void *para )
 {
 	BaseType_t task_status;
+	
+	//recive current value
 	uint8_t button_vaule;
 	
 	for( ; ; ){
+		//tasknotify recive key task pass key value
 		task_status = xTaskNotifyWait(0,0,(uint32_t*)(&button_vaule),portMAX_DELAY);
 		
 		if( task_status==pdPASS ) {
@@ -55,14 +59,17 @@ void led_task( void *para )
 	}
 }
 
+	//key scan task 
 void key_task( void *para )
 {
 	TickType_t lastwake_time;
+	//key scan period time 20ms
 	const TickType_t scan_period = pdMS_TO_TICKS( 20 );
 	lastwake_time = xTaskGetTickCount();
 	
 	uint8_t key_value = N_KEY;
 	static uint16_t scan_cnt = 0;
+	//this queue send key value to menu
 	key_queuehandle = xQueueCreate( 1,sizeof(uint8_t) );
 	
 	for( ; ; ) {
@@ -71,11 +78,13 @@ void key_task( void *para )
 		xTaskNotify(led_taskhandle,(uint32_t)(key_value),eSetValueWithoutOverwrite);
 		xQueueSend( key_queuehandle,&key_value,NULL );
 		
+		//if 1 minute no key press will delete menu task so menu will comeback mainmenu.
 		if( key_value == N_KEY ) {
 			scan_cnt++;
+			//scan period 20ms 3000*20 = 60000ms
 			if( scan_cnt == 3000 ) {
 				vTaskDelete( menu_taskhandle );
-				xTaskCreate( menu_task, "MENU_Task", 200, NULL, 1, &menu_taskhandle );
+				xTaskCreate( menu_task, "MENU_Task", 512, NULL, 1, &menu_taskhandle );
 				scan_cnt = 0;
 		}
 	}
@@ -84,6 +93,7 @@ void key_task( void *para )
 	}
 }
 
+	//adc task scan priod 1s
 void adc_task( void *para )
 {
 	float voltage = 0;
@@ -92,13 +102,17 @@ void adc_task( void *para )
 	const TickType_t scan_period = pdMS_TO_TICKS( 1000 );
 	lastwake_time = xTaskGetTickCount();
 	
+	//queue send temperature data and adc convert data to main menu task
 	adc_queuehandle = xQueueCreate( 2, sizeof(float) );
 	
 	adc_Init();
 	
 	for( ; ; ) {
+		
+		//get temperature and adc value
 		voltage = Get_Voltage();
 		temperature = Get_Chip_Temperature();
+		
 		if( adc_queuehandle != NULL ) {
 			xQueueSend( adc_queuehandle, &temperature, 0 );
 			xQueueSend( adc_queuehandle, &voltage, 0);
@@ -108,33 +122,41 @@ void adc_task( void *para )
 	}
 }
 
-uint8_t current_menu_index = 0;
 
 void menu_task( void *para )
 {
-	current_menu_index = 0;
+	uint8_t current_menu_index = 0;
 	
 	for( ; ; ) {
+		//get menu index
 		current_menu_index = menu_table[current_menu_index].current_operation();
 	}
 }
 
+//rtc task scan period is 1s
 void rtc_task( void *para )
 {
-	RTC_init( &systime );
-	rtc_semaphorehandle = xSemaphoreCreateBinary();
+	RTC_CheckAndConfig(&systime);
+	
+	TickType_t lastwake_time;
+	const TickType_t scan_period = pdMS_TO_TICKS( 1000 );
+	lastwake_time = xTaskGetTickCount();
+	
+	//queue send rtc 32bit register value to main menu task
 	rtc_queuehandle = xQueueCreate( 1, sizeof(uint32_t) );
-	BaseType_t rtc_semaphorestatus;
 	uint32_t rtc_value = 0;
 	
 	while(1)
 	{
-		rtc_semaphorestatus = xSemaphoreTake( rtc_semaphorehandle, portMAX_DELAY );
-		if( rtc_semaphorestatus == pdPASS )
+		//polling rtc flag set get value and send queue
+		if( RTC_GetFlagStatus(RTC_FLAG_SEC) == SET )
 		{
 			rtc_value = RTC_GetCounter();
-			xQueueSend( rtc_queuehandle, &rtc_value, portMAX_DELAY );
+			RTC_ClearFlag(RTC_FLAG_SEC);
+			xQueueSend( rtc_queuehandle, &rtc_value, 0 );
 		}
+
+		xTaskDelayUntil( &lastwake_time, scan_period );
 	}
 }
 
@@ -142,13 +164,14 @@ int main(void)
 {
 	BaseType_t led_taskstaus, key_taskstaus, adc_taskstaus;
 	
+	//Configure hardware
 	prvSetupHardware();
 	
 	led_taskstaus = xTaskCreate( led_task, "LED_Task", 50, NULL, 1, &led_taskhandle );
-	key_taskstaus = xTaskCreate( key_task, "KEY_Task", 50, NULL, 2, &key_taskhandle );
+	key_taskstaus = xTaskCreate( key_task, "KEY_Task", 50, NULL, 1, &key_taskhandle );
 	adc_taskstaus = xTaskCreate( adc_task, "ADC_Task", 50, NULL, 1, &adc_taskhandle );
-	xTaskCreate( menu_task, "MENU_Task", 200, NULL, 1, &menu_taskhandle );
-	xTaskCreate( rtc_task, "RTC_Task", 50, NULL, 3, &rtc_taskhandle );
+	xTaskCreate( menu_task, "MENU_Task", 512, NULL, 1, &menu_taskhandle );
+	xTaskCreate( rtc_task, "RTC_Task", 128, NULL, 2, &rtc_taskhandle );
 	
 	/* Start the scheduler. */
 	vTaskStartScheduler();

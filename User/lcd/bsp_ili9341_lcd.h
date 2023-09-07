@@ -138,7 +138,7 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^23*2 = 0X6C00 0000 + 0X100 0000 = 0X6D00
 #define      ILI9341_DispWindow_Y_Star		    0     //起始点的Y坐标
 
 #define 			ILI9341_LESS_PIXEL	  							240			//液晶屏较短方向的像素宽度
-#define 			ILI9341_MORE_PIXEL	 								320			//液晶屏较长方向的像素宽度
+#define 			ILI9341_MORE_PIXEL	 							320			//液晶屏较长方向的像素宽度
 
 //根据液晶扫描方向而变化的XY像素宽度
 //调用ILI9341_GramScan函数设置方向时会自动更改
@@ -151,7 +151,7 @@ extern uint8_t LCD_SCAN_MODE;
 /******************************* 定义 ILI934 显示屏常用颜色 ********************************/
 #define      BACKGROUND		                BLACK   //默认背景颜色
 
-#define      WHITE		 		                  0xFFFF	   //白色
+#define      WHITE		 		           0xFFFF	   //白色
 #define      BLACK                         0x0000	   //黑色 
 #define      GREY                          0xF7DE	   //灰色 
 #define      BLUE                          0x001F	   //蓝色 

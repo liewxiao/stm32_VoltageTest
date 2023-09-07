@@ -16,8 +16,9 @@ extern TaskHandle_t rtc_taskhandle;
 extern QueueHandle_t  key_queuehandle;
 extern QueueHandle_t adc_queuehandle;
 extern QueueHandle_t rtc_queuehandle;
-extern SemaphoreHandle_t rtc_semaphorehandle;
 
 extern rtc_time systime;
+
+typedef enum{ MYFALSE = 0, MYTURE = 1 }mybool;
 
 #endif

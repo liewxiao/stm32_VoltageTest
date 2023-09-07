@@ -52,8 +52,10 @@
 .\objects\main.o: ..\User\lcd\fonts.h
 .\objects\main.o: ..\User\lcd\fonts.h
 .\objects\main.o: ..\User\menu\menu.h
+.\objects\main.o: ..\User\global.h
 .\objects\main.o: ..\User\rtc\bsp_rtc.h
 .\objects\main.o: ..\User\./rtc/bsp_calendar.h
 .\objects\main.o: ..\User\./rtc/bsp_date.h
 .\objects\main.o: ..\User\global.h
-.\objects\main.o: ..\User\rtc\bsp_rtc.h
+.\objects\main.o: ..\User\password\password.h
+.\objects\main.o: ..\User\menu\menu.h

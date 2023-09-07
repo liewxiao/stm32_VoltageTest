@@ -4,9 +4,9 @@
 #include "bsp_ili9341_lcd.h"
 #include "module_key.h"
 #include "module_adc.h"
-#include "bsp_rtc.h"
 #include <stdio.h>
 #include "global.h"
+#include "password.h"
 
 #define GET_KEY		1
 #define GET_DEFAULT -1

@@ -1,18 +1,3 @@
-/**
-  ******************************************************************************
-  * @file    bsp_rtc.c
-  * @version V1.0
-  * @date    2013-xx-xx
-  * @brief   stm32 RTC 驱动
-  ******************************************************************************
-  * @attention
-  *
-  * 实验平台:野火 F103-霸道 STM32 开发板 
-  * 论坛    :http://www.firebbs.cn
-  * 淘宝    :https://fire-stm32.taobao.com
-  *
-  ******************************************************************************
-  */ 
 #include "./rtc/bsp_rtc.h"
 
 
@@ -25,27 +10,6 @@ char const *en_WEEK_STR[] = { "Sunday","Monday", "Tuesday", "Wednesday", "Thursd
 char const *en_zodiac_sign[] = {"Pig", "Rat", "Ox", "Tiger", "Rabbit", "Dragon", "Snake", "Horse", "Goat", "Monkey", "Rooster", "Dog"};
 
 
-
-/*
- * 函数名：NVIC_Configuration
- * 描述  ：配置RTC秒中断的主中断优先级为1，次优先级为0
- * 输入  ：无
- * 输出  ：无
- * 调用  ：外部调用
- */
-static void RTC_NVIC_Config(void)
-{
-	NVIC_InitTypeDef NVIC_InitStructure;
-	
-	/* Enable the RTC Interrupt */
-	NVIC_InitStructure.NVIC_IRQChannel = RTC_IRQn;
-	NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
-	NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-	NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_InitStructure);
-}
-
-
 /*
  * 函数名：RTC_CheckAndConfig
  * 描述  ：检查并配置RTC
@@ -53,7 +17,7 @@ static void RTC_NVIC_Config(void)
  * 输出  ：无
  * 调用  ：外部调用
  */
-static void RTC_CheckAndConfig(rtc_time *tm)
+void RTC_CheckAndConfig(rtc_time *tm)
 {
    	/*在启动时检查备份寄存器BKP_DR1，如果内容不是0xA5A5,
 	  则需重新配置时间并询问用户调整时间*/
@@ -195,11 +159,6 @@ void Time_Display( uint32_t rtc_value, rtc_time *tm )
 	ILI9341_DispStringLine_EN_CH( LINE(3),(char*)str );
 }
 
-void RTC_init( rtc_time *tm )
-{
-	RTC_NVIC_Config();
-	RTC_CheckAndConfig(tm);
-}
 
 
 

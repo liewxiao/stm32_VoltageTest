@@ -1,5 +1,6 @@
 #include "module_adc/module_adc.h"
 
+/*adc value buffer*/
 vu16 ADC_Buf[ADC_BUF_SIZE] = {0};
 
 //ADCGPIO口初始化为模拟量输入
@@ -15,6 +16,7 @@ static void ADCxGPIO_Config(void)
 	GPIO_Init(ADC_PORT, &GPIOIint_Struct);
 }
 
+/*setup adc GPIO channel */
 static void ADCx_Config(void)
 {
 	ADC_InitTypeDef ADCIint_Struct;
@@ -50,6 +52,7 @@ static void ADCx_Config(void)
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
+/*DMA Init */
 static void dma_Init( void )
 {
 	DMA_InitTypeDef DMA_InitStructure;

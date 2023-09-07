@@ -32,12 +32,12 @@ static int month_days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
  /*计算公历*/
 void GregorianDay(rtc_time * tm)
 {
-	int leapsToDate;
-	int lastYear;
-	int day;
-	int MonthOffset[] = { 0,31,59,90,120,151,181,212,243,273,304,334 };
+	static int leapsToDate;
+	static int lastYear;
+	static int day;
+	static int MonthOffset[] = { 0,31,59,90,120,151,181,212,243,273,304,334 };
 
-//	lastYear=tm->tm_year-1;
+	lastYear=tm->tm_year-1;
 
 //	/*计算从公元元年到计数的前一年之中一共经历了多少个闰年*/
 //	leapsToDate = lastYear/4 - lastYear/100 + lastYear/400;      

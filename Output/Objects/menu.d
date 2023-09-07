@@ -37,11 +37,7 @@
 .\objects\menu.o: ..\User\lcd\fonts.h
 .\objects\menu.o: ..\User\module_key\module_key.h
 .\objects\menu.o: ..\User\module_adc\module_adc.h
-.\objects\menu.o: ..\User\rtc\bsp_rtc.h
 .\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\menu.o: ..\User\./rtc/bsp_calendar.h
-.\objects\menu.o: ..\User\./rtc/bsp_date.h
-.\objects\menu.o: ..\User\module_led\module_led.h
 .\objects\menu.o: ..\User\global.h
 .\objects\menu.o: ..\User\freertos\include\FreeRTOS.h
 .\objects\menu.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
@@ -56,3 +52,8 @@
 .\objects\menu.o: ..\User\freertos\include\list.h
 .\objects\menu.o: ..\User\freertos\include\semphr.h
 .\objects\menu.o: ..\User\rtc\bsp_rtc.h
+.\objects\menu.o: ..\User\./rtc/bsp_calendar.h
+.\objects\menu.o: ..\User\./rtc/bsp_date.h
+.\objects\menu.o: ..\User\global.h
+.\objects\menu.o: ..\User\password\password.h
+.\objects\menu.o: ..\User\menu\menu.h

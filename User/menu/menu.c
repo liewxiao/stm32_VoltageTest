@@ -1,5 +1,7 @@
 #include "menu.h"
 
+/*Init LCD setup LCD scan mode word display size background
+ color and clear screen*/  
 void lcd_Strinit( void )
 {
 	ILI9341_Init();
@@ -9,6 +11,7 @@ void lcd_Strinit( void )
 	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
 }
 
+/*define menu struct array ,each struct have display function*/
 key_table menu_table[35] = {
 	//zero menu level
 	{ 0, main_menu },
@@ -56,9 +59,12 @@ key_table menu_table[35] = {
 	{ 34, history_data }
 };
 
+/*LCD display scan each pirod have key press*/
 static char scan_status = GET_DEFAULT;
 static uint8_t menu_key = 0;
 
+/*Only when the read queue is not N_KEY and the queue is received
+successfully can the current menu button state be changed*/
 static uint8_t wait_key_box( char *key_status )
 {
 	uint8_t key_value = 0;
@@ -80,12 +86,15 @@ uint8_t main_menu( void )
 	menu_key = 0;
 	uint32_t rtc_value = 0;
 	
+	/*define voltage temperature buffer*/
 	float voltage = 0;
 	float temperature = 0;
 	char Vbuf[50] = {0};
 	char Tbuf[50] = {0};
 	
 	while(1){
+		
+		/*scan current menu whether key press*/
 		menu_key = wait_key_box( &scan_status );
 		
 		if( scan_status == GET_KEY ) {
@@ -98,10 +107,12 @@ uint8_t main_menu( void )
 			}
 		}
 		
+		/*Receive rtc temperature voltage value*/
 		xQueueReceive( rtc_queuehandle, &rtc_value, 0 );
 		xQueueReceive( adc_queuehandle, &temperature, 0 );
 		xQueueReceive( adc_queuehandle, &voltage, 0 );
 		
+		/*analyze rtc value*/
 		Time_Display( rtc_value, &systime );
 
 		sprintf( Vbuf,"电压值：%.1f",voltage);
@@ -121,7 +132,12 @@ uint8_t main_menu( void )
 uint8_t password_menu( void )
 {
 	ILI9341_Clear(0,0,LCD_X_LENGTH,LCD_Y_LENGTH);
+	
 	menu_key = 0;
+	uint8_t password[4] = {0, 0, 0, 0};
+	uint8_t location = 0;
+	uint8_t lastlocation = 0;
+	char numbuf[10] = {0};
 	
 	while(1){
 		menu_key = wait_key_box( &scan_status );
@@ -135,7 +151,38 @@ uint8_t password_menu( void )
 			}
 		}
 		
-		ILI9341_DispStringLine_EN_CH( LINE(0),"请输入四位数字密码：" );
+		lastlocation = location;
+		password_op( menu_key, &location, password );
+		
+		if( lastlocation != location )
+			ILI9341_Clear( 0, 132, 240, 16 );
+		
+		switch( location )
+		{
+			case 0:
+				ILI9341_DispString_EN_CH( 98, 132, "^" );
+				break;
+			case 1:
+				ILI9341_DispString_EN_CH( 82, 132, "^" );
+				break;
+			case 2:
+				ILI9341_DispString_EN_CH( 66, 132, "^" );
+				break;
+			case 3:
+				ILI9341_DispString_EN_CH( 50, 132, "^" );
+				break;
+		}
+		
+		sprintf(numbuf,"%d-",password[3]);
+		ILI9341_DispString_EN_CH( 50, 116, numbuf );
+		sprintf(numbuf,"%d-",password[2]);
+		ILI9341_DispString_EN_CH( 66, 116, numbuf );
+		sprintf(numbuf,"%d-",password[1]);
+		ILI9341_DispString_EN_CH( 82, 116, numbuf );
+		sprintf(numbuf,"%d",password[0]);
+		ILI9341_DispString_EN_CH( 98, 116, numbuf );
+		
+		ILI9341_DispString_CH( 40, 100, "请输入四位数密码" );
 	}
 }
 

@@ -149,21 +149,9 @@ void DebugMon_Handler(void)
   * @param  None
   * @retval None
   */
-void RTC_IRQHandler(void)
+/*void RTC_IRQHandler(void)
 {
-	BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-	
-	if (RTC_GetITStatus(RTC_IT_SEC) != RESET)
-	{
-		/* Clear the RTC Second interrupt */
-	    RTC_ClearITPendingBit(RTC_IT_SEC);
-		
-		RTC_WaitForLastTask();
-		xSemaphoreGiveFromISR( rtc_semaphorehandle,&pxHigherPriorityTaskWoken );
-		
-		portYIELD_FROM_ISR( pxHigherPriorityTaskWoken );
-	}
-}
+}*/
 
 /**
   * @}

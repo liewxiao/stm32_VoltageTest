@@ -51,5 +51,4 @@
 .\objects\global.o: ..\User\lcd\fonts.h
 .\objects\global.o: ..\User\./rtc/bsp_calendar.h
 .\objects\global.o: ..\User\./rtc/bsp_date.h
-.\objects\global.o: ..\User\module_led\module_led.h
 .\objects\global.o: ..\User\global.h

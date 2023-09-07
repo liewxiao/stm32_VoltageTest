@@ -11,9 +11,8 @@ TaskHandle_t rtc_taskhandle;
 QueueHandle_t  key_queuehandle;
 QueueHandle_t adc_queuehandle;
 QueueHandle_t rtc_queuehandle;
-SemaphoreHandle_t rtc_semaphorehandle;
 
-rtc_time systime = { 59, 30, 17, 2, 9, 2023, 6 };
+rtc_time systime = { 59, 6, 23, 2, 9, 2023, 6 };
 
 /*struct rtc_time {
 	int tm_sec;

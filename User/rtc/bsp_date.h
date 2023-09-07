@@ -2,7 +2,7 @@
 #define __DATE_H
 
 #include "stm32f10x.h"
-
+#pragma pack(4)
 typedef struct{
 	int tm_sec;
 	int tm_min;

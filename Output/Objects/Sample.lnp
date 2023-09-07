@@ -14,6 +14,8 @@
 ".\objects\global.o"
 ".\objects\bsp_rtc.o"
 ".\objects\bsp_date.o"
+".\objects\password.o"
+".\objects\eeprom.o"
 ".\objects\misc.o"
 ".\objects\stm32f10x_adc.o"
 ".\objects\stm32f10x_bkp.o"

@@ -38,7 +38,6 @@
 .\objects\bsp_rtc.o: ..\User\lcd\fonts.h
 .\objects\bsp_rtc.o: ..\User\./rtc/bsp_calendar.h
 .\objects\bsp_rtc.o: ..\User\./rtc/bsp_date.h
-.\objects\bsp_rtc.o: ..\User\module_led\module_led.h
 .\objects\bsp_rtc.o: ..\User\global.h
 .\objects\bsp_rtc.o: ..\User\freertos\include\FreeRTOS.h
 .\objects\bsp_rtc.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
