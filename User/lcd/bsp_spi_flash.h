@@ -4,9 +4,6 @@
 #include "stm32f10x.h"
 #include <stdio.h>
 
-//#define  sFLASH_ID              0xEF3015   //W25X16
-//#define  sFLASH_ID              0xEF4015	 //W25Q16
-//#define  sFLASH_ID              0XEF4018   //W25Q128
 #define  sFLASH_ID              0XEF4017    //W25Q64
 
 #define SPI_FLASH_PageSize              256

@@ -15,6 +15,7 @@
 #include "bsp_ili9341_lcd.h"
 #include "menu.h"
 #include "global.h"
+#include "eeprom.h"
 
 static void prvSetupHardware( void );
 void menu_task( void *para );
@@ -160,16 +161,18 @@ void rtc_task( void *para )
 	}
 }
 
+uint8_t password[2] = { 0x04, 0xD2 };
+
 int main(void)
 {
-	BaseType_t led_taskstaus, key_taskstaus, adc_taskstaus;
-	
 	//Configure hardware
 	prvSetupHardware();
 	
-	led_taskstaus = xTaskCreate( led_task, "LED_Task", 50, NULL, 1, &led_taskhandle );
-	key_taskstaus = xTaskCreate( key_task, "KEY_Task", 50, NULL, 1, &key_taskhandle );
-	adc_taskstaus = xTaskCreate( adc_task, "ADC_Task", 50, NULL, 1, &adc_taskhandle );
+	//write_eeprom( password, 0, 2 );
+	
+	xTaskCreate( led_task, "LED_Task", 50, NULL, 1, &led_taskhandle );
+	xTaskCreate( key_task, "KEY_Task", 50, NULL, 1, &key_taskhandle );
+	xTaskCreate( adc_task, "ADC_Task", 50, NULL, 1, &adc_taskhandle );
 	xTaskCreate( menu_task, "MENU_Task", 512, NULL, 1, &menu_taskhandle );
 	xTaskCreate( rtc_task, "RTC_Task", 128, NULL, 2, &rtc_taskhandle );
 	
@@ -227,7 +230,7 @@ static void prvSetupHardware( void )
 							| RCC_APB2Periph_GPIOD | RCC_APB2Periph_GPIOE | RCC_APB2Periph_AFIO, ENABLE );
 
 	/* SPI2 Periph clock enable */
-	RCC_APB1PeriphClockCmd( RCC_APB1Periph_SPI2, ENABLE );
+	//RCC_APB1PeriphClockCmd( RCC_APB1Periph_SPI2, ENABLE );
 
 
 	/* Set the Vector Table base address at 0x08000000 */
@@ -240,7 +243,7 @@ static void prvSetupHardware( void )
 	
 	//init peripheral
 	lcd_Strinit();
-	USART_Config();
 	GPIO_LED_Config();
 	GPIO_Key_Iint();
+	eeprom_init();
 }

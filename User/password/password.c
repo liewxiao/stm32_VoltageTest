@@ -39,7 +39,10 @@ mybool check_password( uint8_t* passwordpart )
 		temp_password += passwordpart[i];
 	}
 	
-	
+	if(read_eeprom( readbuff, 0, 2 )) {
+		if( ((temp_password & 0xFF00) == readbuff[0]) && ((temp_password & 0x00FF) == readbuff[1]) )
+			password_state = MYTURE;
+	}
 	
 	return password_state;
 }

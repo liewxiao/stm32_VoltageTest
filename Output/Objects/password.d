@@ -57,3 +57,4 @@
 .\objects\password.o: ..\User\./rtc/bsp_date.h
 .\objects\password.o: ..\User\global.h
 .\objects\password.o: ..\User\password\password.h
+.\objects\password.o: ..\User\eeprom\eeprom.h

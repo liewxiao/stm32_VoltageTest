@@ -57,3 +57,4 @@
 .\objects\menu.o: ..\User\global.h
 .\objects\menu.o: ..\User\password\password.h
 .\objects\menu.o: ..\User\menu\menu.h
+.\objects\menu.o: ..\User\eeprom\eeprom.h

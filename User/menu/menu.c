@@ -147,7 +147,12 @@ uint8_t password_menu( void )
 			switch( menu_key )
 			{
 				case KEY_ENTER:
-					return 2;
+					if( check_password( password ) ) {
+						return 2;
+					}
+					else {
+						ILI9341_DispString_EN_CH( 50, 148, "密码错误请重新输入" );
+					}
 			}
 		}
 		
@@ -160,29 +165,29 @@ uint8_t password_menu( void )
 		switch( location )
 		{
 			case 0:
-				ILI9341_DispString_EN_CH( 98, 132, "^" );
+				ILI9341_DispString_EN_CH( 122, 132, "^" );
 				break;
 			case 1:
-				ILI9341_DispString_EN_CH( 82, 132, "^" );
+				ILI9341_DispString_EN_CH( 106, 132, "^" );
 				break;
 			case 2:
-				ILI9341_DispString_EN_CH( 66, 132, "^" );
+				ILI9341_DispString_EN_CH( 90, 132, "^" );
 				break;
 			case 3:
-				ILI9341_DispString_EN_CH( 50, 132, "^" );
+				ILI9341_DispString_EN_CH( 74, 132, "^" );
 				break;
 		}
 		
 		sprintf(numbuf,"%d-",password[3]);
-		ILI9341_DispString_EN_CH( 50, 116, numbuf );
+		ILI9341_DispString_EN_CH( 74, 116, numbuf );
 		sprintf(numbuf,"%d-",password[2]);
-		ILI9341_DispString_EN_CH( 66, 116, numbuf );
+		ILI9341_DispString_EN_CH( 90, 116, numbuf );
 		sprintf(numbuf,"%d-",password[1]);
-		ILI9341_DispString_EN_CH( 82, 116, numbuf );
+		ILI9341_DispString_EN_CH( 106, 116, numbuf );
 		sprintf(numbuf,"%d",password[0]);
-		ILI9341_DispString_EN_CH( 98, 116, numbuf );
+		ILI9341_DispString_EN_CH( 122, 116, numbuf );
 		
-		ILI9341_DispString_CH( 40, 100, "请输入四位数密码" );
+		ILI9341_DispString_CH( 50, 100, "请输入四位数密码" );
 	}
 }
 

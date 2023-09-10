@@ -1055,8 +1055,7 @@ int GetGBKCode_from_EXFlash( uint8_t * pBuffer, uint16_t c)
 	  	
 		/*GB2312 公式*/
     pos = ((High8bit-0xa1)*94+Low8bit-0xa1)*WIDTH_CH_CHAR*HEIGHT_CH_CHAR/8; 
-		SPI_FLASH_BufferRead(pBuffer,GBKCODE_START_ADDRESS+pos,WIDTH_CH_CHAR*HEIGHT_CH_CHAR/8); //读取字库数据  
-//	  printf ( "%02x %02x %02x %02x\n", pBuffer[0],pBuffer[1],pBuffer[2],pBuffer[3]);
+	SPI_FLASH_BufferRead(pBuffer,GBKCODE_START_ADDRESS+pos,WIDTH_CH_CHAR*HEIGHT_CH_CHAR/8); //读取字库数据  
 	
 		return 0;  
      
