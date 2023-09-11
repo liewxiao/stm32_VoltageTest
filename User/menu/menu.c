@@ -156,6 +156,7 @@ uint8_t password_menu( void )
 			}
 		}
 		
+		/*save last arrow location if arrow location variable change refresh arrow*/
 		lastlocation = location;
 		password_op( menu_key, &location, password );
 		

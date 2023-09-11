@@ -260,14 +260,12 @@ static void ILI9341_FSMC_Config ( void )
 static void ILI9341_REG_Config ( void )
 {
 	/*  Power control B (CFh)  */
-	DEBUG_DELAY  ();
 	ILI9341_Write_Cmd ( 0xCF  );
 	ILI9341_Write_Data ( 0x00  );
 	ILI9341_Write_Data ( 0x81  );
 	ILI9341_Write_Data ( 0x30  );
 	
 	/*  Power on sequence control (EDh) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xED );
 	ILI9341_Write_Data ( 0x64 );
 	ILI9341_Write_Data ( 0x03 );
@@ -275,14 +273,12 @@ static void ILI9341_REG_Config ( void )
 	ILI9341_Write_Data ( 0x81 );
 	
 	/*  Driver timing control A (E8h) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xE8 );
 	ILI9341_Write_Data ( 0x85 );
 	ILI9341_Write_Data ( 0x10 );
 	ILI9341_Write_Data ( 0x78 );
 	
 	/*  Power control A (CBh) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xCB );
 	ILI9341_Write_Data ( 0x39 );
 	ILI9341_Write_Data ( 0x2C );
@@ -291,35 +287,29 @@ static void ILI9341_REG_Config ( void )
 	ILI9341_Write_Data ( 0x02 );
 	
 	/* Pump ratio control (F7h) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xF7 );
 	ILI9341_Write_Data ( 0x20 );
 	
 	/* Driver timing control B */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xEA );
 	ILI9341_Write_Data ( 0x00 );
 	ILI9341_Write_Data ( 0x00 );
 	
 	/* Frame Rate Control (In Normal Mode/Full Colors) (B1h) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xB1 );
 	ILI9341_Write_Data ( 0x00 );
 	ILI9341_Write_Data ( 0x1B );
 	
 	/*  Display Function Control (B6h) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xB6 );
 	ILI9341_Write_Data ( 0x0A );
 	ILI9341_Write_Data ( 0xA2 );
 	
 	/* Power Control 1 (C0h) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xC0 );
 	ILI9341_Write_Data ( 0x35 );
 	
 	/* Power Control 2 (C1h) */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0xC1 );
 	ILI9341_Write_Data ( 0x11 );
 	
@@ -339,7 +329,6 @@ static void ILI9341_REG_Config ( void )
 	/* Gamma Set (26h) */
 	ILI9341_Write_Cmd ( 0x26 );
 	ILI9341_Write_Data ( 0x01 );
-	DEBUG_DELAY ();
 	
 	/* Positive Gamma Correction */
 	ILI9341_Write_Cmd ( 0xE0 ); //Set Gamma
@@ -378,10 +367,8 @@ static void ILI9341_REG_Config ( void )
 	ILI9341_Write_Data ( 0x0F );
 	
 	/* memory access control set */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0x36 ); 	
 	ILI9341_Write_Data ( 0xC8 );    /*竖屏  左上角到 (起点)到右下角 (终点)扫描方式*/
-	DEBUG_DELAY ();
 	
 	/* column address control set */
 	ILI9341_Write_Cmd ( CMD_SetCoordinateX ); 
@@ -391,7 +378,6 @@ static void ILI9341_REG_Config ( void )
 	ILI9341_Write_Data ( 0xEF );
 	
 	/* page address control set */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( CMD_SetCoordinateY ); 
 	ILI9341_Write_Data ( 0x00 );
 	ILI9341_Write_Data ( 0x00 );
@@ -399,14 +385,12 @@ static void ILI9341_REG_Config ( void )
 	ILI9341_Write_Data ( 0x3F );
 	
 	/*  Pixel Format Set (3Ah)  */
-	DEBUG_DELAY ();
 	ILI9341_Write_Cmd ( 0x3a ); 
 	ILI9341_Write_Data ( 0x55 );
 	
 	/* Sleep Out (11h)  */
 	ILI9341_Write_Cmd ( 0x11 );	
 	ILI9341_Delay ( 0xAFFf<<2 );
-	DEBUG_DELAY ();
 	
 	/* Display ON (29h) */
 	ILI9341_Write_Cmd ( 0x29 ); 

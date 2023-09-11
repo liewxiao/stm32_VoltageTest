@@ -129,9 +129,7 @@ RAM基地址 = 0X6D00 0000 = 0X6C00 0000+2^23*2 = 0X6C00 0000 + 0X100 0000 = 0X6D00
 #define      ILI9341_D15_CLK                RCC_APB2Periph_GPIOD   
 #define      ILI9341_D15_PORT               GPIOD
 #define      ILI9341_D15_PIN                GPIO_Pin_10
-
-/*************************************** 调试预用 ******************************************/
-#define      DEBUG_DELAY()                
+              
 
 /***************************** ILI934 显示区域的起始坐标和总行列数 ***************************/
 #define      ILI9341_DispWindow_X_Star		    0     //起始点的X坐标
@@ -170,7 +168,7 @@ extern uint8_t LCD_SCAN_MODE;
 /******************************* 定义 ILI934 常用命令 ********************************/
 #define      CMD_SetCoordinateX		 		    0x2A	     //设置X坐标
 #define      CMD_SetCoordinateY		 		    0x2B	     //设置Y坐标
-#define      CMD_SetPixel		 		          0x2C	     //填充像素
+#define      CMD_SetPixel		 		        0x2C	     //填充像素
 
 
 

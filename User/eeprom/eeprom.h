@@ -4,25 +4,31 @@
 #include "stm32f10x.h"
 #include "global.h"
 
-#define             EEPROM_I2Cx                                I2C1
-#define             EEPROM_I2C_APBxClock_FUN                   RCC_APB1PeriphClockCmd
-#define             EEPROM_I2C_CLK                             RCC_APB1Periph_I2C1
-#define             EEPROM_I2C_GPIO_APBxClock_FUN              RCC_APB2PeriphClockCmd
-#define             EEPROM_I2C_GPIO_CLK                        RCC_APB2Periph_GPIOB     
-#define             EEPROM_I2C_SCL_PORT                        GPIOB   
-#define             EEPROM_I2C_SCL_PIN                         GPIO_Pin_6
-#define             EEPROM_I2C_SDA_PORT                        GPIOB 
-#define             EEPROM_I2C_SDA_PIN                         GPIO_Pin_7
+#define EEPROM_I2C_WR	0		/* 写控制bit */
+#define EEPROM_I2C_RD	1		/* 读控制bit */
 
-/* STM32 I2C 快速模式 */
-#define I2C_Speed             400000
-#define I2Cx_OWN_ADDRESS      0X0A 
+#define EEPROM_I2C_SCL_1()  EEPROM_GPIO_PORT_I2C->BSRR = EEPROM_I2C_SCL_PIN				/* SCL = 1 */
+#define EEPROM_I2C_SCL_0()  EEPROM_GPIO_PORT_I2C->BRR = EEPROM_I2C_SCL_PIN				/* SCL = 0 */
+
+#define EEPROM_I2C_SDA_1()  EEPROM_GPIO_PORT_I2C->BSRR = EEPROM_I2C_SDA_PIN				/* SDA = 1 */
+#define EEPROM_I2C_SDA_0()  EEPROM_GPIO_PORT_I2C->BRR = EEPROM_I2C_SDA_PIN				/* SDA = 0 */
+
+#define EEPROM_I2C_SDA_READ()  ((EEPROM_GPIO_PORT_I2C->IDR & EEPROM_I2C_SDA_PIN) != 0)	/* 读SDA口线状态 */
+
+#define EEPROM_GPIO_PORT_I2C	GPIOB			/* GPIO端口 */
+#define EEPROM_RCC_I2C_PORT 	RCC_APB2Periph_GPIOB		/* GPIO端口时钟 */
+#define EEPROM_I2C_SCL_PIN		GPIO_Pin_6			/* 连接到SCL时钟线的GPIO */
+#define EEPROM_I2C_SDA_PIN		GPIO_Pin_7			/* 连接到SDA数据线的GPIO */
+
+
 #define AT24C02_ADDRESS		  0xA0
 
+mybool ee_CheckOk(void);
+mybool ee_ReadBytes(uint8_t *_pReadBuf, uint16_t _usAddress, uint16_t _usSize);
+mybool ee_WriteBytes(uint8_t *_pWriteBuf, uint16_t _usAddress, uint16_t _usSize);
+void ee_Erase(void);
 
-void eeprom_init( void );
-mybool read_eeprom( uint8_t* readbuff, uint8_t pos, uint8_t read_num );
-mybool write_eeprom( uint8_t *writebuff, uint8_t pos, uint8_t write_num );
+
 
 
 #endif

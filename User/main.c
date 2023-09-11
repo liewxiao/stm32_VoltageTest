@@ -161,14 +161,14 @@ void rtc_task( void *para )
 	}
 }
 
-uint8_t password[2] = { 0x04, 0xD2 };
+uint8_t password[4] = { 8, 8, 8, 8 };
 
 int main(void)
 {
 	//Configure hardware
 	prvSetupHardware();
 	
-	//write_eeprom( password, 0, 2 );
+	//ee_WriteBytes(password, 0, 4);
 	
 	xTaskCreate( led_task, "LED_Task", 50, NULL, 1, &led_taskhandle );
 	xTaskCreate( key_task, "KEY_Task", 50, NULL, 1, &key_taskhandle );
@@ -245,5 +245,5 @@ static void prvSetupHardware( void )
 	lcd_Strinit();
 	GPIO_LED_Config();
 	GPIO_Key_Iint();
-	eeprom_init();
+	ee_CheckOk();
 }

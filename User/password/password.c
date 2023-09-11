@@ -1,5 +1,6 @@
 #include "password.h"
 
+/*Process the password array and update the cursor position in real time*/
 void password_op( uint8_t key, uint8_t*location, uint8_t* passwordpart )
 {
 	switch( key )
@@ -26,22 +27,22 @@ void password_op( uint8_t key, uint8_t*location, uint8_t* passwordpart )
 	}
 }
 
+/*Check whether the entered password is correct with the set password*/
 mybool check_password( uint8_t* passwordpart )
 {
-	mybool password_state = MYFALSE;
+	mybool password_state = MYTURE;
 	uint8_t i = 0;
-	uint8_t offset = 10;
-	uint16_t temp_password = 0;
-	uint8_t readbuff[2] = {0};
+	uint8_t readbuff[4] = {0};
 	
-	for( i=3; i<=0; i-- ) {
-		temp_password *= offset;
-		temp_password += passwordpart[i];
-	}
-	
-	if(read_eeprom( readbuff, 0, 2 )) {
-		if( ((temp_password & 0xFF00) == readbuff[0]) && ((temp_password & 0x00FF) == readbuff[1]) )
-			password_state = MYTURE;
+	//read AT24C02 data and check password array part
+	if(ee_ReadBytes(readbuff, 0, 4)) {
+		for( i=0; i<4; i++ ) {
+			if(readbuff[i] == passwordpart[i])
+				continue;
+			else
+				password_state = MYFALSE;
+				break;
+		}
 	}
 	
 	return password_state;
